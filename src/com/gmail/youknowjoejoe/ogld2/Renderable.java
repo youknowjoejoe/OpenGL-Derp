@@ -3,6 +3,8 @@ package com.gmail.youknowjoejoe.ogld2;
 import org.lwjgl.opengl.*;
 
 import com.gmail.youknowjoejoe.ogld2.math.Matrix44f;
+import com.gmail.youknowjoejoe.ogld2.math.Vec3;
+import com.gmail.youknowjoejoe.ogld2.math.Vec4;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
@@ -11,9 +13,10 @@ import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
 public class Renderable {
-	private Vertex[] vertices;
 	private int vboID;
 	
+	private Vertex[] vertices;
+	private float[] vertexData;
 	private byte[] elements;
 	private int eboID;
 	
@@ -22,7 +25,8 @@ public class Renderable {
 	
 	private Matrix44f modelMatrix;
 	private int projectionMatrixLocation = -1;
-	private int modelViewMatrixUniformLocation = -1;
+	private int viewMatrixUniformLocation = -1;
+	private int modelMatrixUniformLocation = -1;
 	private int normalMatrixUniformLocation = -1;
 	
 	private Texture[] textures;
@@ -56,7 +60,7 @@ public class Renderable {
 		
 		//make a single array of vertex data
 		int stride = vertices[0].getValues().length;
-		float[] vertexData = new float[vertices.length*stride];
+		vertexData = new float[vertices.length*stride];
 		for(int i = 0; i < vertices.length; i++){
 			for(int i2 = 0; i2 < stride; i2++){
 				vertexData[i*stride + i2] = vertices[i].getValues()[i2];
@@ -85,15 +89,21 @@ public class Renderable {
 		
 		try {
 			shader.createUniform("projectionMatrix");
-			shader.createUniform("modelViewMatrix");
-			//shader.createUniform("normalMatrix");
+			shader.createUniform("viewMatrix");
+			shader.createUniform("modelMatrix");
+			shader.createUniform("normalMatrix");
+			shader.createUniform("lightPos1");
+			shader.createUniform("lightColor1");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		projectionMatrixLocation = shader.getUniform("projectionMatrix");
-		modelViewMatrixUniformLocation = shader.getUniform("modelViewMatrix");
-		//normalMatrixUniformLocation = shader.getUniform("normalMatrix");
+		viewMatrixUniformLocation = shader.getUniform("viewMatrix");
+		modelMatrixUniformLocation = shader.getUniform("modelMatrix");
+		normalMatrixUniformLocation = shader.getUniform("normalMatrix");
 	}
+	
+	//public void initialize()
 	
 	public Renderable(Vertex[] vertices, Shader shader, Matrix44f modelMatrix, Texture[] textures){
 		byte[] elements = new byte[vertices.length];
@@ -113,8 +123,11 @@ public class Renderable {
 			}
 		}
 		glUniformMatrix4fv(projectionMatrixLocation,true,projectionMatrix.getValues());
-		glUniformMatrix4fv(modelViewMatrixUniformLocation,true,viewMatrix.times(modelMatrix).getValues());
-		//glUniformMatrix4fv(normalMatrixUniformLocation,true,modelMatrix.excludeTranslation().getInverse().getTransposedValues());
+		glUniformMatrix4fv(viewMatrixUniformLocation,true,viewMatrix.getValues());
+		glUniformMatrix4fv(modelMatrixUniformLocation,true,modelMatrix.getValues());
+		glUniformMatrix4fv(normalMatrixUniformLocation,true,(viewMatrix.times(modelMatrix)).excludeTranslation().getInverse().getTransposedValues());
+		glUniform3fv(shader.getUniform("lightPos1"), viewMatrix.times(new Vec4(0,10,0,1)).getVec3().getCoord());
+		glUniform3fv(shader.getUniform("lightColor1"), new Vec3(1,1,1).getCoord());
 		glBindVertexArray(vaoID);
 		//glPolygonMode( GL_FRONT_AND_BACK, GL_LINE ); //used for wireframe mode
 		glDrawElements(GL_TRIANGLES, elements.length, GL_UNSIGNED_BYTE, 0);

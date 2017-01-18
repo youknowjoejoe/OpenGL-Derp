@@ -31,4 +31,11 @@ public class MouseInputStructure implements GLFWCursorPosCallbackI {
 		oldPos = currentPos;
 		return result;
 	}
+	
+	public Vec2 getPos(){
+		if(currentPos == null){
+			return new Vec2(0,0);
+		}
+		return currentPos;
+	}
 }

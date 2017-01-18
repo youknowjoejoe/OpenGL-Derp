@@ -1,7 +1,5 @@
 package com.gmail.youknowjoejoe.ogld2.math;
 
-import java.util.Arrays;
-
 public class Vec3 {
 	
 	public static Vec3 vertical = new Vec3(0,1,0);

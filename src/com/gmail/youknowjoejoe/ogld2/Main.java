@@ -107,27 +107,86 @@ public class Main {
 	
 	private void initOpenGL(){
 		Shader s = new Shader("./shaders/shader.vsh","./shaders/shader.fsh");
-		Renderable r = new Renderable(
-				new Vertex[]{
-						new Vertex(new Vec3(0.5f,-0.5f,-1f).getCoord(),  new Vec2(1,0).getCoord(),    new Vec3(1.0f,0.0f,0.0f).getCoord()),
-						new Vertex(new Vec3(0f,0.5f,-1f).getCoord(),     new Vec2(0.5f,1).getCoord(), new Vec3(0.0f,1.0f,0.0f).getCoord()),
-						new Vertex(new Vec3(-0.5f,-0.5f,-1f).getCoord(), new Vec2(0,0).getCoord(),    new Vec3(0.0f,0.0f,1.0f).getCoord())
-						}, 
-				new byte[]{0,1,2},
+		
+		Vertex[] boxVertices = new Vertex[]{
+				//front
+				new Vertex(new Vec3(-1f,-1f,-1f).getCoord(),  new Vec2(0,0).getCoord(), new Vec3(0,0,-1).getCoord()),
+				new Vertex(new Vec3(1f,-1f,-1f).getCoord(),     new Vec2(1,0).getCoord(), new Vec3(0,0,-1).getCoord()),
+				new Vertex(new Vec3(1f,1f,-1f).getCoord(), new Vec2(1,1).getCoord(), new Vec3(0,0,-1).getCoord()),
+				new Vertex(new Vec3(-1f,1f,-1f).getCoord(), new Vec2(0,1).getCoord(), new Vec3(0,0,-1).getCoord()),
+				
+				//back
+				new Vertex(new Vec3(-1f,-1f,1f).getCoord(),  new Vec2(0,0).getCoord(), new Vec3(0,0,1).getCoord()),
+				new Vertex(new Vec3(1f,-1f,1f).getCoord(),     new Vec2(1,0).getCoord(), new Vec3(0,0,1).getCoord()),
+				new Vertex(new Vec3(1f,1f,1f).getCoord(), new Vec2(1,1).getCoord(), new Vec3(0,0,1).getCoord()),
+				new Vertex(new Vec3(-1f,1f,1f).getCoord(), new Vec2(0,1).getCoord(), new Vec3(0,0,1).getCoord()),
+				
+				//bottom
+				new Vertex(new Vec3(-1f,-1f,-1f).getCoord(),  new Vec2(0,0).getCoord(), new Vec3(0,-1,0).getCoord()),
+				new Vertex(new Vec3(1f,-1f,-1f).getCoord(),     new Vec2(1,0).getCoord(), new Vec3(0,-1,0).getCoord()),
+				new Vertex(new Vec3(1f,-1f,1f).getCoord(), new Vec2(1,1).getCoord(), new Vec3(0,-1,0).getCoord()),
+				new Vertex(new Vec3(-1f,-1f,1f).getCoord(), new Vec2(0,1).getCoord(), new Vec3(0,-1,0).getCoord()),
+				
+				//top
+				new Vertex(new Vec3(-1f,1f,-1f).getCoord(),  new Vec2(0,0).getCoord(), new Vec3(0,1,0).getCoord()),
+				new Vertex(new Vec3(1f,1f,-1f).getCoord(),     new Vec2(1,0).getCoord(), new Vec3(0,1,0).getCoord()),
+				new Vertex(new Vec3(1f,1f,1f).getCoord(), new Vec2(1,1).getCoord(), new Vec3(0,1,0).getCoord()),
+				new Vertex(new Vec3(-1f,1f,1f).getCoord(), new Vec2(0,1).getCoord(), new Vec3(0,1,0).getCoord()),
+				
+				//left
+				new Vertex(new Vec3(-1f,-1f,-1f).getCoord(),  new Vec2(0,0).getCoord(), new Vec3(-1,0,0).getCoord()),
+				new Vertex(new Vec3(-1f,-1f,1f).getCoord(),     new Vec2(1,0).getCoord(), new Vec3(-1,0,0).getCoord()),
+				new Vertex(new Vec3(-1f,1f,1f).getCoord(), new Vec2(1,1).getCoord(), new Vec3(-1,0,0).getCoord()),
+				new Vertex(new Vec3(-1f,1f,-1f).getCoord(), new Vec2(0,1).getCoord(), new Vec3(-1,0,0).getCoord()),
+				
+				//right
+				new Vertex(new Vec3(1f,-1f,-1f).getCoord(),  new Vec2(0,0).getCoord(), new Vec3(1,0,0).getCoord()),
+				new Vertex(new Vec3(1f,-1f,1f).getCoord(),     new Vec2(1,0).getCoord(), new Vec3(1,0,0).getCoord()),
+				new Vertex(new Vec3(1f,1f,1f).getCoord(), new Vec2(1,1).getCoord(), new Vec3(1,0,0).getCoord()),
+				new Vertex(new Vec3(1f,1f,-1f).getCoord(), new Vec2(0,1).getCoord(), new Vec3(1,0,0).getCoord()),
+				};
+		byte[] boxElements = {
+				0,1,2,0,2,3,
+				4,5,6,4,6,7,
+				8,9,10,8,10,11,
+				12,13,14,12,14,15,
+				16,17,18,16,18,19,
+				20,21,22,20,22,23
+		};
+		Renderable l = new Renderable(
+				boxVertices, 
+				boxElements,
 				s,
-				Matrix44f.identity,
+				Matrix44f.getTranslation(new Vec3(0,10,0)).times(Matrix44f.getScale(new Vec3(0.1f,0.1f,0.1f))),
 				new Texture[]{new Texture("texture1","./resources/crate.png",GL_CLAMP_TO_EDGE, GL_NEAREST)}
 				);
+		Renderable r = new Renderable(
+				boxVertices, 
+				boxElements,
+				s,
+				Matrix44f.getTranslation(new Vec3(5,0,-5)).times(Matrix44f.getRotation((float) Math.PI/6.0f, Matrix44f.Direction.Y)),
+				new Texture[]{new Texture("texture1","./resources/crate.png",GL_CLAMP_TO_EDGE, GL_NEAREST)}
+				);
+		Renderable r2 = new Renderable(
+				boxVertices, 
+				boxElements,
+				s,
+				Matrix44f.getTranslation(new Vec3(7,4,0)).times(Matrix44f.getRotation((float) Math.PI/3.0f, Matrix44f.Direction.Y)),
+				new Texture[]{new Texture("texture1","./resources/crate.png",GL_CLAMP_TO_EDGE, GL_NEAREST)}
+				);
+		
 		FlyingPlayer p = new FlyingPlayer(new Camera());
-		sc = new Scene(new Renderable[]{r},Matrix44f.identity,Matrix44f.getPerspective((float)Math.PI/4.0f,((float)WIDTH)/((float)HEIGHT),0.1f,1000.0f),p);
+		sc = new Scene(new Renderable[]{l,r,r2},Matrix44f.identity,Matrix44f.getPerspective((float)Math.PI/4.0f,((float)WIDTH)/((float)HEIGHT),0.1f,1000.0f),p);
 		glfwSetKeyCallback(window, p.getKeys());
 		glfwSetCursorPosCallback(window, p.getMouse());
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);  
 	}
 
 	private void loop() {
 		// Set the clear color
-		glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+		glClearColor(0.0f, 0.05f, 0.1f, 0.0f);
 		
+		glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 		glEnable(GL_DEPTH_TEST);
 		
 		oldTime = glfwGetTime();
@@ -159,7 +218,6 @@ public class Main {
 			sc.render();
 			
 			glfwSwapBuffers(window); // swap the color buffers
-			//glfwSetCursorPos(window, WIDTH/2, HEIGHT/2);
 		}
 	}
 	

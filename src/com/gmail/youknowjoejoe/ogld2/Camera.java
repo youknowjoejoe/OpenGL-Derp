@@ -41,7 +41,8 @@ public class Camera {
 	}
 	
 	public void rotate(float pitch, float yaw){
-		this.pitch += pitch;
+		this.pitch = Math.min(Math.max(this.pitch + pitch,(float)-Math.PI/2.0f+0.001f),(float)Math.PI/2.0f-0.001f); //ADD FEATURE
+		//this.pitch += pitch;
 		this.yaw += yaw;
 		updateRotationMatrix();
 	}

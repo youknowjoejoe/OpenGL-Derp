@@ -11,7 +11,7 @@ public class FlyingPlayer {
 	private MouseInputStructure mouse;
 	
 	private float radiansPerSecond = 0.005f;
-	private float unitsPerSecond = 0.02f;
+	private float unitsPerSecond = 0.06f;
 	
 	public FlyingPlayer(Camera c){
 		this.c = c;

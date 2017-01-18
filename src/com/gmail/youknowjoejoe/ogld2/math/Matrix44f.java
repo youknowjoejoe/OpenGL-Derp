@@ -114,7 +114,7 @@ public class Matrix44f {
 	}
 	
 	public float dot(int row, Vec4 v){
-		return get(row,0)*v.getX()+get(row,1)*v.getY()+get(row,2)*v.getZ()+get(row,1)*v.getW();
+		return get(row,0)*v.getX()+get(row,1)*v.getY()+get(row,2)*v.getZ()+get(row,3)*v.getW();
 	}
 	
 	public Matrix44f scaledBy(float f){
